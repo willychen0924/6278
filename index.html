@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>6278 台表科｜匯聚帶 v4</title>
+<style>
+:root{
+  --bg:#f0ebe0;
+  --surface:#fff;
+  --ink:#111a28;
+  --ink-2:#3b4a5e;
+  --ink-3:#7a8694;
+  --ink-4:#a5afb9;
+  --rule:#d6cdb5;
+  --line:#e8e0cc;
+  --line-soft:#f0ead8;
+
+  --now:#c07c10;
+  --now-bg:#fff6d6;
+
+  --c1:#c6395e; --c1b:#fdedf0; --c1w:#fdf5f7;
+  --c2:#2978c4; --c2b:#e4f0fb; --c2w:#f1f7fd;
+  --c3:#b96a15; --c3b:#fbeedc; --c3w:#fdf7ec;
+  --c4:#9e7a12; --c4b:#f9efc5; --c4w:#fcf7df;
+  --c5:#1d7a48; --c5b:#daf1e2; --c5w:#eaf5ee;
+  --c6:#0e7878; --c6b:#d2ecec; --c6w:#e6f3f3;
+  --c7:#6a3b8a; --c7b:#ebdef3; --c7w:#f2e8f7;
+
+  --shadow:0 1px 3px rgba(17,26,40,.06),0 6px 20px rgba(17,26,40,.05);
+  --r:10px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
+body{
+  margin:0;padding:20px 16px 50px;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang TC","Noto Sans TC",sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+  font-size:14px;line-height:1.55;
+}
+.w{max-width:980px;margin:0 auto}
+.m{font-variant-numeric:tabular-nums}
+
+/* ═════ HEADER ═════ */
+.hd{
+  background:var(--surface);border-radius:var(--r);
+  box-shadow:var(--shadow);margin-bottom:12px;
+  overflow:hidden;position:relative;
+}
+.hd::before{
+  content:"";position:absolute;top:0;left:0;right:0;height:4px;
+  background:linear-gradient(90deg,var(--c1) 0%,var(--c1) 14%,var(--c2) 14%,var(--c2) 28%,var(--c3) 28%,var(--c3) 42%,var(--c4) 42%,var(--c4) 57%,var(--c5) 57%,var(--c5) 71%,var(--c6) 71%,var(--c6) 85%,var(--c7) 85%);
+}
+.hd-top{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:20px 24px 0;gap:20px;flex-wrap:wrap;
+}
+.hd-id{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.hd-id h1{margin:0;font-size:38px;font-weight:800;letter-spacing:-.03em;line-height:1}
+.hd-id h1 .code{color:var(--ink-2);margin-right:4px}
+.hd-id .pipe{color:var(--rule);font-weight:300;font-size:32px;margin:0 2px}
+.hd-id h2{margin:0;font-size:38px;font-weight:800;letter-spacing:-.03em;line-height:1}
+.hd-price{text-align:right;display:flex;align-items:baseline;gap:14px}
+.hd-price .p{font-size:44px;font-weight:800;letter-spacing:-.04em;line-height:1}
+.hd-price .chg{font-size:12px;color:var(--c1);font-weight:700}
+.hd-price .chg span{color:var(--ink-3);font-weight:500;margin-left:4px}
+
+.hd-stats{
+  display:flex;gap:0;
+  margin:14px 24px 0;
+  border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);
+}
+.hd-stats>div{
+  flex:1;padding:8px 20px;border-right:1px dashed var(--line);
+}
+.hd-stats>div:first-child{padding-left:0}
+.hd-stats>div:last-child{border-right:none;padding-right:0}
+.hd-stats dt{font-size:10px;font-weight:700;color:var(--ink-3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:1px}
+.hd-stats dd{margin:0;font-size:16px;font-weight:800;color:var(--ink);letter-spacing:-.01em}
+
+.kpis{
+  display:flex;gap:8px;flex-wrap:wrap;
+  padding:12px 24px 14px;
+}
+.kp{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:6px 12px;border-radius:8px;
+  font-size:12.5px;font-weight:700;
+  border:1px solid var(--line);background:var(--surface);
+}
+.kp .dot{width:8px;height:8px;border-radius:3px;flex-shrink:0}
+.kp .v{font-weight:800;color:var(--ink);font-size:14px;letter-spacing:-.01em}
+.kp .n{color:var(--ink-3);font-size:11px;font-weight:600}
+.kp .stars{color:#c07c10;font-size:11px;letter-spacing:1px}
+
+/* ═════ UPDATE RIBBON ═════ */
+.upd{
+  background:var(--surface);border-radius:var(--r);
+  box-shadow:0 1px 2px rgba(0,0,0,.04);
+  margin-bottom:12px;border:1px solid var(--line);
+  overflow:hidden;
+}
+.upd-toggle{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 20px;cursor:pointer;
+  -webkit-user-select:none;user-select:none;
+  background:transparent;border:none;width:100%;
+  font:inherit;color:var(--ink);text-align:left;
+}
+.upd-toggle:hover{background:#faf7ee}
+.upd-toggle h3{
+  margin:0;font-size:13px;font-weight:800;flex:1;
+  display:flex;align-items:center;gap:8px;
+}
+.upd-toggle h3::before{
+  content:"4/10";font-size:10px;font-weight:800;color:#fff;
+  background:var(--c2);padding:2px 8px;border-radius:4px;letter-spacing:.04em;
+}
+.upd-toggle .arr{
+  font-size:14px;color:var(--ink-3);transition:transform .25s;
+}
+.upd.open .upd-toggle .arr{transform:rotate(180deg)}
+.upd-body{
+  max-height:0;overflow:hidden;transition:max-height .35s cubic-bezier(.4,0,.2,1);
+}
+.upd.open .upd-body{max-height:600px}
+.upd-list{
+  padding:0 20px 14px;margin:0;
+  list-style:none;
+  columns:2;column-gap:24px;
+}
+.upd-list li{
+  break-inside:avoid;
+  font-size:13px;color:var(--ink-2);line-height:1.55;
+  padding:3px 0 3px 18px;position:relative;
+}
+.upd-list li::before{
+  content:"";position:absolute;left:4px;top:10px;
+  width:5px;height:5px;border-radius:50%;background:var(--c2);opacity:.5;
+}
+.hl{font-weight:800;color:var(--ink);background:linear-gradient(180deg,transparent 60%,#ffe89b 60%);padding:0 2px}
+
+/* ═════ ZONES ═════ */
+.zones{display:flex;flex-direction:column;gap:0}
+.zone{
+  --zc:var(--ink);--zb:#f5f5f5;--zw:#fafafa;
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-bottom:none;
+  display:grid;
+  grid-template-columns:220px 1fr;
+  min-height:0;
+  position:relative;
+  transition:box-shadow .2s;
+}
+.zone:first-child{border-radius:var(--r) var(--r) 0 0}
+.zone:last-child{border-bottom:1px solid var(--line);border-radius:0 0 var(--r) var(--r)}
+.zone::before{
+  content:"";position:absolute;top:0;bottom:0;left:0;width:4px;
+  background:var(--zc);z-index:2;
+}
+.zone:first-child::before{border-radius:var(--r) 0 0 0}
+.zone:last-child::before{border-radius:0 0 0 var(--r)}
+.zone:hover{box-shadow:0 2px 12px rgba(17,26,40,.08);z-index:2}
+.zone[data-c="1"]{--zc:var(--c1);--zb:var(--c1b);--zw:var(--c1w)}
+.zone[data-c="2"]{--zc:var(--c2);--zb:var(--c2b);--zw:var(--c2w)}
+.zone[data-c="3"]{--zc:var(--c3);--zb:var(--c3b);--zw:var(--c3w)}
+.zone[data-c="4"]{--zc:var(--c4);--zb:var(--c4b);--zw:var(--c4w)}
+.zone[data-c="5"]{--zc:var(--c5);--zb:var(--c5b);--zw:var(--c5w)}
+.zone[data-c="6"]{--zc:var(--c6);--zb:var(--c6b);--zw:var(--c6w)}
+.zone[data-c="7"]{--zc:var(--c7);--zb:var(--c7b);--zw:var(--c7w)}
+
+.z-left{
+  padding:14px 16px;
+  background:var(--zw);
+  border-right:1px solid var(--line-soft);
+  display:flex;flex-direction:column;gap:6px;
+}
+.z-left .price{
+  font-size:28px;font-weight:800;color:var(--zc);
+  letter-spacing:-.02em;line-height:1.05;
+}
+.z-left .name{
+  font-size:15px;font-weight:800;color:var(--ink);line-height:1.25;
+}
+.z-left .meta{
+  display:flex;align-items:center;gap:6px;flex-wrap:wrap;
+}
+.badge{
+  display:inline-flex;align-items:center;gap:4px;
+  padding:3px 9px;border-radius:999px;
+  font-size:10.5px;font-weight:800;
+  background:var(--zb);color:var(--zc);
+  border:1px solid color-mix(in srgb,var(--zc) 25%,transparent);
+  white-space:nowrap;
+}
+.badge::before{content:"●";font-size:7px;vertical-align:1px}
+.dist{font-size:11.5px;color:var(--ink-3);font-weight:600}
+.dist b{color:var(--ink-2);font-weight:700}
+.z-stars{
+  font-size:14px;color:#c07c10;letter-spacing:1px;line-height:1;
+}
+.z-stars .empty{color:var(--ink-4);opacity:.4}
+
+.z-right{
+  padding:12px 18px;
+  display:flex;flex-direction:column;gap:8px;
+}
+.z-cols{
+  display:grid;grid-template-columns:1fr 1fr;gap:14px;
+}
+.z-cols h4{
+  margin:0 0 4px;font-size:10px;font-weight:800;
+  color:var(--zc);letter-spacing:.1em;text-transform:uppercase;
+}
+.z-cols ul{margin:0;padding:0;list-style:none}
+.z-cols li{
+  font-size:12.5px;color:var(--ink-2);line-height:1.5;
+  padding:2px 0 2px 12px;position:relative;
+}
+.z-cols li::before{
+  content:"";position:absolute;left:2px;top:8px;
+  width:4px;height:4px;border-radius:50%;
+  background:var(--ink-4);
+}
+.z-cols li b,.z-cols li strong{color:var(--ink);font-weight:800}
+
+.chips{display:flex;flex-wrap:wrap;gap:4px}
+.chip{
+  display:inline-flex;align-items:center;gap:4px;
+  padding:3px 7px;border-radius:5px;
+  background:var(--zw);
+  border:1px solid color-mix(in srgb,var(--zc) 20%,transparent);
+  font-size:11px;color:var(--ink-2);font-weight:600;
+}
+.chip em{font-style:normal;font-size:9px;font-weight:800;color:var(--zc);letter-spacing:.03em}
+.chip b{color:var(--ink);font-weight:800}
+
+/* volume bar */
+.vol-bar{
+  display:flex;align-items:center;gap:8px;
+  padding:4px 0 0;
+}
+.vol-bar .vb-label{font-size:10px;font-weight:700;color:var(--ink-3);letter-spacing:.06em;white-space:nowrap}
+.vol-bar .vb-track{
+  flex:1;height:6px;background:var(--line-soft);border-radius:3px;
+  overflow:hidden;position:relative;
+}
+.vol-bar .vb-fill{
+  height:100%;border-radius:3px;
+  background:var(--zc);opacity:.5;
+  transition:width .3s;
+}
+.vol-bar .vb-pct{font-size:10px;font-weight:800;color:var(--ink-2);min-width:36px;text-align:right}
+
+.verdict{
+  padding:7px 12px;
+  background:var(--zw);
+  border-left:2px solid var(--zc);
+  border-radius:0 4px 4px 0;
+  font-size:12.5px;color:var(--ink-2);line-height:1.5;
+}
+.verdict::before{
+  content:"判讀 ";font-size:9px;font-weight:800;
+  color:var(--zc);letter-spacing:.1em;margin-right:4px;
+}
+.verdict b,.verdict strong{color:var(--ink);font-weight:800}
+
+/* Gap rows */
+.gap{
+  background:#f4efe3;
+  border:1px solid var(--line);border-bottom:none;
+  padding:8px 18px 8px 24px;
+  display:grid;grid-template-columns:220px 1fr;gap:0;
+  font-size:12px;color:var(--ink-3);
+  position:relative;
+}
+.gap::before{
+  content:"";position:absolute;top:0;bottom:0;left:0;width:4px;
+  background:repeating-linear-gradient(180deg,var(--rule) 0,var(--rule) 4px,transparent 4px,transparent 8px);
+}
+.gap .g-range{
+  font-weight:800;color:var(--ink-2);font-size:13px;
+  padding-right:16px;display:flex;align-items:center;
+}
+.gap .g-desc{
+  padding:0 0 0 18px;
+  border-left:1px dashed var(--rule);line-height:1.5;
+}
+.gap .g-desc strong{color:var(--ink-2);font-weight:700}
+
+/* Current price */
+.now-row{
+  background:linear-gradient(90deg,#e08b18,#d4790a);
+  border:none;
+  padding:9px 24px;
+  display:flex;align-items:center;gap:14px;
+  font-size:12px;color:#fff;font-weight:800;
+  position:relative;z-index:3;
+  box-shadow:0 2px 8px rgba(212,121,10,.3);
+}
+.now-row .arrow{font-size:16px;color:#fff}
+.now-row .label{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.75)}
+.now-row .val{font-size:22px;letter-spacing:-.02em;color:#fff}
+.now-row .note{font-size:11px;color:rgba(255,255,255,.7);font-weight:600;margin-left:auto}
+
+/* Rating method box */
+.rating-note{
+  background:var(--surface);border-radius:var(--r);
+  box-shadow:0 1px 2px rgba(0,0,0,.04);
+  margin-bottom:12px;border:1px solid var(--line);
+  padding:12px 20px;
+  font-size:12px;color:var(--ink-3);line-height:1.6;
+}
+.rating-note b{color:var(--ink-2)}
+.rating-note .star-ex{color:#c07c10;font-size:13px}
+
+/* Footer */
+.ft{
+  margin-top:14px;padding:12px 20px;
+  background:var(--line-soft);border-radius:var(--r);
+  font-size:11px;color:var(--ink-3);text-align:center;line-height:1.6;
+}
+.ft b{color:var(--ink-2)}
+
+/* ═════ RESPONSIVE ═════ */
+@media(max-width:760px){
+  .hd-top{flex-direction:column;gap:8px;align-items:flex-start}
+  .hd-price{text-align:left}
+  .hd-id h1,.hd-id h2{font-size:30px}
+  .hd-id .pipe{font-size:26px}
+  .hd-price .p{font-size:36px}
+  .hd-stats{flex-wrap:wrap}
+  .hd-stats>div{flex:none;width:50%;padding:8px 14px}
+  .hd-stats>div:nth-child(2){border-right:none}
+  .hd-stats>div:nth-child(3){padding-left:0}
+  .kpis{gap:6px}
+  .kp{padding:5px 10px;font-size:12px}
+  .kp .v{font-size:13px}
+  .upd-list{columns:1}
+  .zone{grid-template-columns:1fr}
+  .z-left{
+    border-right:none;
+    border-bottom:1px solid var(--line-soft);
+    flex-direction:row;align-items:center;gap:12px;
+    flex-wrap:wrap;padding:12px 16px;
+  }
+  .z-left .price{font-size:24px}
+  .z-left .name{font-size:14px}
+  .z-right{padding:12px 16px}
+  .z-cols{grid-template-columns:1fr}
+  .gap{grid-template-columns:1fr;gap:4px}
+  .gap .g-desc{border-left:none;padding-left:0}
+}
+@media(max-width:480px){
+  body{padding:14px 8px 30px}
+  .hd-id h1,.hd-id h2{font-size:24px}
+  .hd-id .pipe{font-size:20px}
+  .hd-price .p{font-size:30px}
+  .z-left .price{font-size:22px}
+}
+</style>
+</head>
+<body>
+<div class="w">
+
+<!-- ═════ HEADER ═════ -->
+<header class="hd">
+  <div class="hd-top">
+    <div class="hd-id">
+      <h1 class="m"><span class="code">6278</span> 台表科</h1>
+      <span class="pipe">|</span>
+      <h2>匯聚帶分析</h2>
+    </div>
+    <div class="hd-price m">
+      <span class="p">104.0</span>
+      <span class="chg">↓ 27.8%<span>自歷史高</span></span>
+    </div>
+  </div>
+
+  <dl class="hd-stats m">
+    <div><dt>基準日</dt><dd>2026/04/10</dd></div>
+    <div><dt>收盤</dt><dd>104.0</dd></div>
+    <div><dt>當日高</dt><dd>104.0</dd></div>
+    <div><dt>歷史高</dt><dd>144.0</dd></div>
+  </dl>
+
+  <div class="kpis m">
+    <div class="kp"><span class="dot" style="background:var(--c6)"></span><span class="v">124–131</span><span class="stars">★★</span><span class="n">挑戰歷史高</span></div>
+    <div class="kp"><span class="dot" style="background:var(--c5)"></span><span class="v">116–121</span><span class="stars">★★★★</span><span class="n">翻多確認</span></div>
+    <div class="kp"><span class="dot" style="background:var(--c2)"></span><span class="v">108–114</span><span class="stars">★★★★★</span><span class="n">套牢主壓</span></div>
+    <div class="kp"><span class="dot" style="background:var(--c1)"></span><span class="v">105–106</span><span class="stars">★★★</span><span class="n">攻擊發起線</span></div>
+    <div class="kp"><span class="dot" style="background:var(--c3)"></span><span class="v">89–95</span><span class="stars">★★★★</span><span class="n">A帶支撐</span></div>
+    <div class="kp"><span class="dot" style="background:var(--c4)"></span><span class="v">81–87</span><span class="stars">★★★★★</span><span class="n">B帶硬底</span></div>
+    <div class="kp"><span class="dot" style="background:var(--c7)"></span><span class="v">72–76</span><span class="stars">★★★</span><span class="n">C帶極端</span></div>
+  </div>
+</header>
+
+<!-- ═════ RATING NOTE ═════ -->
+<div class="rating-note">
+  <b>星級評等方法</b>｜綜合兩大維度：<b>①</b> 獨立技術方法交會數（Fibonacci、N 波、趨勢線、前高低點、結構位）＋ <b>②</b> 近兩年成交量厚薄（Volume Profile）。上行帶：量越厚壓力越硬 = 星越高；下行帶：方法越多支撐越強 = 星越高，量薄則小扣。
+  <span class="star-ex">★</span> = 弱 &nbsp; <span class="star-ex">★★★</span> = 中 &nbsp; <span class="star-ex">★★★★★</span> = 最強
+</div>
+
+<!-- ═════ UPDATE ═════ -->
+<section class="upd open" id="upd">
+  <button class="upd-toggle" onclick="this.closest('.upd').classList.toggle('open')">
+    <h3>更新重點</h3>
+    <span class="arr">▾</span>
+  </button>
+  <div class="upd-body">
+    <ul class="upd-list">
+      <li>4/10 <span class="hl">漲停收 104</span>，碰觸 <span class="hl">Fib 0.382（105.6）+ 2/26 前高（104）</span>雙壓。</li>
+      <li><span class="hl">融資暴增 2,852 張</span>至 5,663 張（近翻倍），散戶追價激進。</li>
+      <li>買方為<span class="hl">自營商 +165</span>，外資 −24、投信 −22.5 反向賣超。</li>
+      <li>新增<span class="hl">上行四層壓力帶</span>：105 攻擊發起線 → 111.4 結構分水嶺。</li>
+      <li>新增<span class="hl">Volume Profile 成交量分析</span>與<span class="hl">星級評等</span>。</li>
+      <li>108–114 近兩年量佔 <span class="hl">28.1%</span>，為最厚套牢牆 → 壓力 ★★★★★。</li>
+      <li>下行 A帶量僅 <span class="hl">4.3%</span>、B帶 <span class="hl">0.4%</span> — 支撐靠結構方法，非量能記憶。</li>
+      <li><span class="hl">89–91 超級匯聚子帶</span>：對數趨勢線 + Fib 0.786，「不破就翻」關鍵。</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═════ ZONE LIST ═════ -->
+<div class="zones">
+
+  <!-- ① 124–131 ★★ -->
+  <div class="zone" data-c="6">
+    <div class="z-left">
+      <div class="price m">124 – 131</div>
+      <div class="name">挑戰歷史高前哨</div>
+      <div class="meta">
+        <span class="badge">遠端目標</span>
+        <span class="z-stars">★★<span class="empty">★★★</span></span>
+      </div>
+      <span class="dist m">距現價 <b>+19.2% ~ +26.0%</b></span>
+    </div>
+    <div class="z-right">
+      <div class="z-cols">
+        <div>
+          <h4>技術來源（2 組方法）</h4>
+          <div class="chips">
+            <span class="chip"><em>N波等幅</em><b>123.5</b></span>
+            <span class="chip"><em>Fib 0.786</em><b>130.7</b></span>
+          </div>
+          <ul style="margin-top:5px">
+            <li>N 波 A 等幅（81.9→114=32.1）從 91.4 起算 = <b>123.5</b></li>
+            <li>跌幅回撤 78.6% = <b>130.7</b></li>
+          </ul>
+        </div>
+        <div>
+          <h4>成交量＋判讀</h4>
+          <div class="vol-bar">
+            <span class="vb-label">近2年量</span>
+            <div class="vb-track"><div class="vb-fill" style="width:16%"></div></div>
+            <span class="vb-pct m">4.6%</span>
+          </div>
+          <ul style="margin-top:5px">
+            <li>近兩年量偏薄，套牢壓力不重</li>
+            <li>到這裡代表大 ABC 修正已完全收復</li>
+            <li>過 131 後直接挑戰歷史高 <b>144</b></li>
+          </ul>
+        </div>
+      </div>
+      <div class="verdict">方法數少＋量薄，<b>壓力強度僅 ★★</b>。屬遠端目標，但若前方各帶依序突破，此區不太會構成強壓。</div>
+    </div>
+  </div>
+
+  <!-- gap -->
+  <div class="gap">
+    <div class="g-range m">121 – 124</div>
+    <div class="g-desc"><strong>過渡帶</strong>｜無明確技術交會，屬突破 121 後往 N 波等幅靠攏的加速空間。</div>
+  </div>
+
+  <!-- ② 116–121 ★★★★ -->
+  <div class="zone" data-c="5">
+    <div class="z-left">
+      <div class="price m">116 – 121</div>
+      <div class="name">結構翻多確認帶</div>
+      <div class="meta">
+        <span class="badge">觀察</span>
+        <span class="z-stars">★★★★<span class="empty">★</span></span>
+      </div>
+      <span class="dist m">距現價 <b>+11.5% ~ +16.3%</b></span>
+    </div>
+    <div class="z-right">
+      <div class="z-cols">
+        <div>
+          <h4>技術來源（4 組方法）</h4>
+          <div class="chips">
+            <span class="chip"><em>雙重前高</em><b>116</b></span>
+            <span class="chip"><em>N波0.786A</em><b>116.6</b></span>
+            <span class="chip"><em>Fib 0.618</em><b>120.3</b></span>
+            <span class="chip"><em>小N c=1.618a</em><b>116.6</b></span>
+          </div>
+        </div>
+        <div>
+          <h4>成交量＋判讀</h4>
+          <div class="vol-bar">
+            <span class="vb-label">近2年量</span>
+            <div class="vb-track"><div class="vb-fill" style="width:54%"></div></div>
+            <span class="vb-pct m">15.1%</span>
+          </div>
+          <ul style="margin-top:5px">
+            <li>近兩年量中等偏厚（<b>15.1%</b>），117–118 為峰值</li>
+            <li>2020/07 高與 2025/03 高皆在 <b>116</b>，雙重前高</li>
+            <li>過 <b>120（Fib 0.618）</b> = 宣告大 ABC 修正結束</li>
+          </ul>
+        </div>
+      </div>
+      <div class="verdict">四組方法 + 量中偏厚 = <b>★★★★</b>。站穩 120 = 結構翻多確認。需先突破 108–114 才有資格。</div>
+    </div>
+  </div>
+
+  <!-- gap -->
+  <div class="gap">
+    <div class="g-range m">114 – 116</div>
+    <div class="g-desc"><strong>前高過渡帶</strong>｜B 波高 114 與 2022/01 高 114 突破確認區。站上才有資格往 116 雙重前高挑戰。</div>
+  </div>
+
+  <!-- ③ 108–114 ★★★★★ -->
+  <div class="zone" data-c="2">
+    <div class="z-left">
+      <div class="price m">108 – 114</div>
+      <div class="name">套牢帶 + 結構主壓</div>
+      <div class="meta">
+        <span class="badge">核心壓力</span>
+        <span class="z-stars">★★★★★</span>
+      </div>
+      <span class="dist m">距現價 <b>+3.8% ~ +9.6%</b></span>
+    </div>
+    <div class="z-right">
+      <div class="z-cols">
+        <div>
+          <h4>技術來源（6 組方法）</h4>
+          <div class="chips">
+            <span class="chip"><em>套牢區</em><b>108–110</b></span>
+            <span class="chip"><em>N波0.618A</em><b>111.2</b></span>
+            <span class="chip"><em>Fib 0.500</em><b>113.0</b></span>
+            <span class="chip"><em>C波Fib 0.786</em><b>109.2</b></span>
+            <span class="chip"><em>B波高</em><b>114.0</b></span>
+            <span class="chip"><em>小N c=a</em><b>109.5</b></span>
+          </div>
+        </div>
+        <div>
+          <h4>成交量＋判讀</h4>
+          <div class="vol-bar">
+            <span class="vb-label">近2年量</span>
+            <div class="vb-track"><div class="vb-fill" style="width:100%"></div></div>
+            <span class="vb-pct m">28.1%</span>
+          </div>
+          <ul style="margin-top:5px">
+            <li>近兩年量<b>最厚</b>（28.1%），108–109 為峰值帶</li>
+            <li>2025/10 下跌起點套牢區</li>
+            <li><b>111.4（黃金分割 0.618）</b>是整張表最硬的鐵板</li>
+            <li>過 111.4 → 結構翻多；過不了 → 仍屬大區間反彈</li>
+          </ul>
+        </div>
+      </div>
+      <div class="verdict">六組方法 + 量最厚 = <b>★★★★★ 全表最強壓力</b>。111.4 是多空分水嶺，105 是門票，111.4 才是入場券。</div>
+    </div>
+  </div>
+
+  <!-- gap -->
+  <div class="gap">
+    <div class="g-range m">106 – 108</div>
+    <div class="g-desc"><strong>突破確認區</strong>｜過 106 後短暫加速空間。2021/01 高點 106 為點狀記憶壓力，近兩年量 4.5%。</div>
+  </div>
+
+  <!-- ④ 105–106 ★★★ -->
+  <div class="zone" data-c="1">
+    <div class="z-left">
+      <div class="price m">105 – 106</div>
+      <div class="name">攻擊發起線</div>
+      <div class="meta">
+        <span class="badge">驗證中</span>
+        <span class="z-stars">★★★<span class="empty">★★</span></span>
+      </div>
+      <span class="dist m">距現價 <b>+1.0% ~ +1.9%</b></span>
+    </div>
+    <div class="z-right">
+      <div class="z-cols">
+        <div>
+          <h4>技術來源（3 組方法）</h4>
+          <div class="chips">
+            <span class="chip"><em>Fib 0.382</em><b>105.6</b></span>
+            <span class="chip"><em>C波Fib 0.618</em><b>105.4</b></span>
+            <span class="chip"><em>2/26前高</em><b>104.0</b></span>
+          </div>
+        </div>
+        <div>
+          <h4>成交量＋判讀</h4>
+          <div class="vol-bar">
+            <span class="vb-label">近2年量</span>
+            <div class="vb-track"><div class="vb-fill" style="width:30%"></div></div>
+            <span class="vb-pct m">8.4%</span>
+          </div>
+          <ul style="margin-top:5px">
+            <li>量中等，不算最厚但仍有壓力記憶</li>
+            <li>4/10 漲停收 104 <b>正好頂到此區下緣</b></li>
+            <li>放量帶過 105 → 結構再升一級</li>
+            <li>碰到站不穩 → 雙頂壓回</li>
+          </ul>
+        </div>
+      </div>
+      <div class="verdict">三組方法 + 量中等 = <b>★★★</b>。104 是「攻擊發起線」也是「逃命線」，能不能用量帶過 105 直接決定反彈性質。</div>
+    </div>
+  </div>
+
+  <!-- ── 現價 ── -->
+  <div class="now-row m">
+    <span class="arrow">▸</span>
+    <span class="label">現價</span>
+    <span class="val">104.0</span>
+    <span class="note">漲停收盤 2026/04/10 ｜ 量 7,760 張</span>
+  </div>
+
+  <!-- gap -->
+  <div class="gap">
+    <div class="g-range m">95 – 104</div>
+    <div class="g-desc"><strong>拉回緩衝帶</strong>｜近兩年量佔 20.6%（量厚），MA60 ≈ 96–97、MA120 ≈ 99–100、MA240 ≈ 102–103，均線叢集壓力支撐互換區。拉回第一觀察 Fib 0.236 = 96.6。</div>
+  </div>
+
+  <!-- ⑤ 89–95 A帶 ★★★★ -->
+  <div class="zone" data-c="3">
+    <div class="z-left">
+      <div class="price m">89 – 95</div>
+      <div class="name">A帶 · 近端支撐</div>
+      <div class="meta">
+        <span class="badge">次要劇本</span>
+        <span class="z-stars">★★★★<span class="empty">★</span></span>
+      </div>
+      <span class="dist m">距現價 <b>-14.4% ~ -8.7%</b></span>
+    </div>
+    <div class="z-right">
+      <div class="z-cols">
+        <div>
+          <h4>技術來源（5 組方法）</h4>
+          <div class="chips">
+            <span class="chip"><em>Fib 0.786</em><b>89.4</b></span>
+            <span class="chip"><em>次波Fib 0.618</em><b>94.2</b></span>
+            <span class="chip"><em>大N C=0.382A</em><b>90.3</b></span>
+            <span class="chip"><em>小N c=a</em><b>91.4</b></span>
+            <span class="chip"><em>對數趨勢線</em><b>86–91↑</b></span>
+          </div>
+        </div>
+        <div>
+          <h4>成交量＋判讀</h4>
+          <div class="vol-bar">
+            <span class="vb-label">近2年量</span>
+            <div class="vb-track"><div class="vb-fill" style="width:15%"></div></div>
+            <span class="vb-pct m">4.3%</span>
+          </div>
+          <ul style="margin-top:5px">
+            <li>近兩年量偏薄（4.3%），<b>支撐主要靠結構方法</b></li>
+            <li><b>89–91 超級匯聚子帶</b>：對數趨勢線 4 組 + Fib 0.786 + N 波</li>
+            <li>91.4 為 2/2 低點，已守住反彈</li>
+          </ul>
+        </div>
+      </div>
+      <div class="verdict">五組方法但量偏薄 = <b>★★★★</b>。89–91 匯聚密度極高是核心，但缺乏量能記憶作為輔助確認，不到滿分。</div>
+    </div>
+  </div>
+
+  <!-- gap -->
+  <div class="gap">
+    <div class="g-range m">87 – 89</div>
+    <div class="g-desc"><strong>A帶→B帶過渡</strong>｜次波段 Fib 0.786 = 88.8、小 N 波 c=1.272a = 88.1 在此交會。A 帶失守會快速向 B 帶靠攏。</div>
+  </div>
+
+  <!-- ⑥ 81–87 B帶 ★★★★★ -->
+  <div class="zone" data-c="4">
+    <div class="z-left">
+      <div class="price m">81 – 87</div>
+      <div class="name">B帶 · 最強硬底</div>
+      <div class="meta">
+        <span class="badge">目標不變</span>
+        <span class="z-stars">★★★★★</span>
+      </div>
+      <span class="dist m">距現價 <b>-22.1% ~ -16.3%</b></span>
+    </div>
+    <div class="z-right">
+      <div class="z-cols">
+        <div>
+          <h4>技術來源（7 組方法）</h4>
+          <div class="chips">
+            <span class="chip"><em>Fib 0.886</em><b>82.4</b></span>
+            <span class="chip"><em>崩盤前低</em><b>81.9</b></span>
+            <span class="chip"><em>大N C=0.5A</em><b>83.0</b></span>
+            <span class="chip"><em>小N c=1.618a</em><b>83.9</b></span>
+            <span class="chip"><em>次波Fib 0.886</em><b>85.6</b></span>
+            <span class="chip"><em>線性趨勢線</em><b>82–86</b></span>
+            <span class="chip"><em>對數趨勢線</em><b>86–91↓</b></span>
+          </div>
+        </div>
+        <div>
+          <h4>成交量＋判讀</h4>
+          <div class="vol-bar">
+            <span class="vb-label">近2年量</span>
+            <div class="vb-track"><div class="vb-fill" style="width:1.5%"></div></div>
+            <span class="vb-pct m">0.4%</span>
+          </div>
+          <div class="vol-bar" style="margin-top:2px">
+            <span class="vb-label">全歷史量</span>
+            <div class="vb-track"><div class="vb-fill" style="width:24%"></div></div>
+            <span class="vb-pct m">6.7%</span>
+          </div>
+          <ul style="margin-top:5px">
+            <li>近兩年量極薄（0.4%），全歷史尚有 6.7% 底部</li>
+            <li>七組獨立方法密集交會 — <b>方法數全表最多</b></li>
+            <li>跌破 = 宣告長線上升趨勢失敗</li>
+          </ul>
+        </div>
+      </div>
+      <div class="verdict">七組方法全表最多，但近兩年量極薄 — 支撐性質是<b>結構型硬底</b>而非量能型厚底。方法密度足以撐起 <b>★★★★★</b>，為波段最具吸引力的佈局帶。</div>
+    </div>
+  </div>
+
+  <!-- gap -->
+  <div class="gap">
+    <div class="g-range m">76 – 81</div>
+    <div class="g-desc"><strong>B帶下方偏薄帶</strong>｜81.9 崩盤前低若失守，此區不易久留。但全歷史量 9.9%（76–81 有歷史底部換手），並非完全真空。</div>
+  </div>
+
+  <!-- ⑦ 72–76 C帶 ★★★ -->
+  <div class="zone" data-c="7">
+    <div class="z-left">
+      <div class="price m">72 – 76</div>
+      <div class="name">C帶 · 極端情境</div>
+      <div class="meta">
+        <span class="badge">極端情境</span>
+        <span class="z-stars">★★★<span class="empty">★★</span></span>
+      </div>
+      <span class="dist m">距現價 <b>-30.8% ~ -26.9%</b></span>
+    </div>
+    <div class="z-right">
+      <div class="z-cols">
+        <div>
+          <h4>技術來源（3 組方法）</h4>
+          <div class="chips">
+            <span class="chip"><em>起漲點</em><b>74.5</b></span>
+            <span class="chip"><em>大N C=0.618A</em><b>75.6</b></span>
+            <span class="chip"><em>還原Fib 0.786</em><b>74.8</b></span>
+          </div>
+        </div>
+        <div>
+          <h4>成交量＋判讀</h4>
+          <div class="vol-bar">
+            <span class="vb-label">近2年量</span>
+            <div class="vb-track"><div class="vb-fill" style="width:0%"></div></div>
+            <span class="vb-pct m">0%</span>
+          </div>
+          <div class="vol-bar" style="margin-top:2px">
+            <span class="vb-label">全歷史量</span>
+            <div class="vb-track"><div class="vb-fill" style="width:30%"></div></div>
+            <span class="vb-pct m">8.3%</span>
+          </div>
+          <ul style="margin-top:5px">
+            <li>近兩年完全無成交，僅有早年歷史量（8.3%）</li>
+            <li>僅在<b>系統性風險</b>才可能觸及</li>
+            <li>2022/10 大波段起漲點 74.5 為最終防線</li>
+          </ul>
+        </div>
+      </div>
+      <div class="verdict">三組方法 + 近兩年無量 = <b>★★★</b>。屬尾部風險區，前提是 A、B 帶全部失守且基本面結構性轉差。</div>
+    </div>
+  </div>
+
+</div>
+
+<footer class="ft">
+  <b>6278 台表科匯聚帶</b>｜基準日 2026/04/10 漲停收 104｜結構：歷史高 144 → A波低 81.9 → B波高 114 → C波進行中｜上行四帶＋下行三帶，共七層。
+  星級 = 獨立方法數 × 成交量分布加權。<b>技術觀察，非投資建議。</b>
+</footer>
+
+</div>
+</body>
+</html>
